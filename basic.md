@@ -1,3 +1,21 @@
+## Docker File
+
+```bash
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+EXPOSE 5000
+
+CMD [ "node" ,"index.js" ]
+```
+
 # Docker Basic Commands Cheat Sheet
 
 ## 1. Docker Images Commands
@@ -35,10 +53,10 @@
 
 ## 3. Docker Exec Commands
 
-| Command                              | Description                        |
-| ------------------------------------ | ---------------------------------- |
-| `docker exec -it container_name sh`  | Enter inside container shell       |
-| `exit`                               | Exit from container shell          |
+| Command                             | Description                  |
+| ----------------------------------- | ---------------------------- |
+| `docker exec -it container_name sh` | Enter inside container shell |
+| `exit`                              | Exit from container shell    |
 
 Example:
 
@@ -50,13 +68,13 @@ docker exec -it pet-server sh
 
 ## 4. Docker Volume Commands
 
-| Command                              | Description                         |
-| ------------------------------------ | ----------------------------------- |
-| `docker volume ls`                   | Show all Docker volumes             |
-| `docker volume create volume_name`   | Create a new volume                 |
-| `docker volume inspect volume_name`  | Show volume details                 |
-| `docker volume rm volume_name`       | Remove a volume                     |
-| `docker volume prune`                | Remove all unused volumes            |
+| Command                             | Description               |
+| ----------------------------------- | ------------------------- |
+| `docker volume ls`                  | Show all Docker volumes   |
+| `docker volume create volume_name`  | Create a new volume       |
+| `docker volume inspect volume_name` | Show volume details       |
+| `docker volume rm volume_name`      | Remove a volume           |
+| `docker volume prune`               | Remove all unused volumes |
 
 Example:
 
@@ -66,17 +84,15 @@ docker volume create pet-volume
 
 ---
 
-
-
 ## 5. Docker Network Commands
 
-| Command                                  | Description                          |
-| ---------------------------------------- | ------------------------------------ |
-| `docker network ls`                      | Show all Docker networks             |
-| `docker network create network_name`     | Create a new network                 |
-| `docker network inspect network_name`    | Show network details                 |
-| `docker network rm network_name`         | Remove a network                     |
-| `docker network prune`                   | Remove unused networks               |
+| Command                               | Description              |
+| ------------------------------------- | ------------------------ |
+| `docker network ls`                   | Show all Docker networks |
+| `docker network create network_name`  | Create a new network     |
+| `docker network inspect network_name` | Show network details     |
+| `docker network rm network_name`      | Remove a network         |
+| `docker network prune`                | Remove unused networks   |
 
 Example:
 
@@ -85,5 +101,3 @@ Create network:
 ```bash
 docker network create pet-network
 ```
-
-
