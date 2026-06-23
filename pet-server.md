@@ -1,47 +1,53 @@
-----------------------------
-         Backend
-----------------------------
+## Backend
+## Dockerfile
 
-```bash
-FROM node:22-alpine
+| Command                                                                                                                                                                                                | Description              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
+| `FROM node:22-alpine`<br><br>`WORKDIR /app`<br><br>`COPY package*.json ./`<br><br>`RUN npm ci`<br><br>`COPY . .`<br><br>`EXPOSE 5000`<br><br>`CMD ["sh", "-lc", "npx prisma generate && npm run dev"]` | Backend Dockerfile setup |
 
-WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+## Environment Variable
 
-COPY . .
-EXPOSE 5000
-CMD ["sh", "-lc", "npx prisma generate && npm run dev"]
-```
-```bash
-DATABASE_URL=postgresql://postgres:postgres@pet-db-container:5432/ph_server?schema=public
-```
-```bash
-1. docker network create pet-network
-2. docker network inspect pet-network
-3.
-     -- docker volume create client-node-modules
-     -- docker volume create server-node-modules
-     -- docker volume create pet-pg-data
-```
+| Command                                                                                     | Description                        |
+| ------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `DATABASE_URL=postgresql://postgres:postgres@pet-db-container:5432/ph_server?schema=public` | PostgreSQL database connection URL |
 
-```bash
-4.docker run --name pet-db-container --network pet-network -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=pet_server -v pet-pg-data:/var/lib/postgresql/data postgres:16-alpine
-```
+## Docker Network & Volume Setup
 
-```bash
-5.docker build -t pet-server-dev .
-6.MSYS_NO_PATHCONV=1 docker run -d --name pet-server --network pet-network --env-file .env -e CHOKIDAR_USEPOLLING=1 -e CHOKIDAR_INTERVAL=300 -p 5000:5000 -v "${PWD}:/app" -v server-node-modules:/app/node_modules -w /app pet-server-dev sh -lc "npm install && npx prisma generate && npx prisma migrate deploy && npm run dev"
-```
+| Command                                    | Description                       |
+| ------------------------------------------ | --------------------------------- |
+| `docker network create pet-network`        | Create Docker network             |
+| `docker network inspect pet-network`       | Check network details             |
+| `docker volume create client-node-modules` | Create client node_modules volume |
+| `docker volume create server-node-modules` | Create server node_modules volume |
+| `docker volume create pet-pg-data`         | Create PostgreSQL data volume     |
 
-```bash
-7. docker exec -it pet-db-container sh
-8. psql -U postgres -d ph_server
-9. \dt
-```
 
-```bash
-10. --- Existing Prisma migration
-docker exec -it pet-server sh -lc "npx prisma migrate deploy"
-```
+## Run PostgreSQL Container
+
+| Command                                                                                                                                                                            | Description                                      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `docker run --name pet-db-container --network pet-network -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=pet_server -v pet-pg-data:/var/lib/postgresql/data postgres:16-alpine` | Run PostgreSQL container with volume and network |
+
+## Build Backend Image
+| Command                            | Description                |
+| ---------------------------------- | -------------------------- |
+| `docker build -t pet-server-dev .` | Build backend Docker image |
+
+## Run Backend Container (Development)
+| Command                                                                                                                                                                                                                                                                                                                            | Description                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `MSYS_NO_PATHCONV=1 docker run -d --name pet-server --network pet-network --env-file .env -e CHOKIDAR_USEPOLLING=1 -e CHOKIDAR_INTERVAL=300 -p 5000:5000 -v "${PWD}:/app" -v server-node-modules:/app/node_modules -w /app pet-server-dev sh -lc "npm install && npx prisma generate && npx prisma migrate deploy && npm run dev"` | Run backend container with bind mount, volume, env file and hot reload |
+
+
+## Access Database Container
+| Command                               | Description                      |
+| ------------------------------------- | -------------------------------- |
+| `docker exec -it pet-db-container sh` | Enter PostgreSQL container shell |
+| `psql -U postgres -d ph_server`       | Connect to PostgreSQL database   |
+| `\dt`                                 | Show database tables             |
+
+## Prisma Migration
+| Command                                                         | Description                                             |
+| --------------------------------------------------------------- | ------------------------------------------------------- |
+| `docker exec -it pet-server sh -lc "npx prisma migrate deploy"` | Run existing Prisma migrations inside backend container |
