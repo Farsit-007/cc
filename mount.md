@@ -1,50 +1,31 @@
-# Docker Bind Mount
-
 ## Bind Mount without Volume
 
-```bash
-docker run -it --name bind-demo
--v "${PWD}:/app"
--w /app
--p 5000:5000
-node:20-alpine sh
--c "npm install -g nodemon && npm install && nodemon --watch /app --legacy-watch index.js"
-```
+| Command                                                                                                                                                                              | Description                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| `docker run -it --name bind-demo -v "${PWD}:/app" -w /app -p 5000:5000 node:20-alpine sh -c "npm install -g nodemon && npm install && nodemon --watch /app --legacy-watch index.js"` | Run container with bind mount |
 
----
+## Bind Mount with Volume
 
-## Bind Mount wit Volume
+| Command                                                                                                                                                                                                                                              | Description                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `docker run -it --name bind-demo5 -v "/c/Users/USER/Desktop/Docker/mod-54:/app" -v node_modules:/app/node_modules -w /app -p 5000:5000 node:20-alpine sh -c "npm install -g nodemon && npm install && nodemon --watch /app --legacy-watch index.js"` | Run container with bind mount + volume |
 
-```bash
-docker run -it --name bind-demo5
--v "/c/Users/USER/Desktop/Docker/mod-54:/app"
--v node_modules:/app/node_modules
--w /app -p 5000:5000 node:20-alpine sh
--c "npm install -g nodemon && npm install && nodemon --watch /app --legacy-watch index.js"
-```
+## Inline Env Send
 
-## Inline Env send
+| Command                                                                       | Description                         |
+| ----------------------------------------------------------------------------- | ----------------------------------- |
+| `docker run -it --rm -p 5000:5000 -e PORT=5000 -e NODE_ENV=production my-app` | Send environment variables directly |
 
-```bash
-docker run -it --rm -p 5000:5000 -e PORT=5000 -e NODE_ENV=production my-app
-```
+## Env Send from File
 
-## Env send from file
+| Command                                                   | Description                                 |
+| --------------------------------------------------------- | ------------------------------------------- |
+| `docker run -it --rm --env-file .env -p 5000:5000 my-app` | Load environment variables from `.env` file |
 
-```bash
-docker run -it --rm --env-file .env -p 5000:5000 my-app
-```
-
-## Checking the env on the container
+## Checking Env Inside Container
 
 | Command                             | Description                  |
 | ----------------------------------- | ---------------------------- |
 | `docker exec -it container_name sh` | Enter inside container shell |
-| `env`                               | To check any file.           |
-| `cat .env`                          | Read the file.               |
-
-Example:
-
-```bash
-docker exec -it pet-server sh
-```
+| `env`                               | Check environment variables  |
+| `cat .env`                          | Read `.env` file             |
